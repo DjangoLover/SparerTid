@@ -4,6 +4,9 @@ import os
 
 rel = lambda *p: os.path.join(os.path.dirname(__file__), *p)
 
+
+AUTH_USER_MODEL = 'account.User'
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -132,6 +135,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     # 'django.contrib.admindocs',
+    'south',
+    'sparertid.apps.account',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
