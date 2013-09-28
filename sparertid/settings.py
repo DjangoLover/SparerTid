@@ -81,6 +81,7 @@ STATICFILES_DIRS = (
     ('i', rel(MEDIA_ROOT, 'i/')),
     ('js', rel(MEDIA_ROOT, 'js/')),
     ('css', rel(MEDIA_ROOT, 'css/')),
+    ('fonts', rel(MEDIA_ROOT, 'fonts/')),
 )
 
 # List of finder classes that know how to find static files in
@@ -169,8 +170,7 @@ REDIS_HOST = ''
 REDIS_PORT = 6379
 REDIS_DB = 0
 
-IMBOT_IN_THREADS = 5
-IMBOT_OUT_THREADS = 2
+IMBOT_THREADS = 5
 
 IMBOT_JABBER_JID = ''
 IMBOT_JABBER_PASSWORD = ''

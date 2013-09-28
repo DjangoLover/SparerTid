@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+{% load static from staticfiles %}
+{% load i18n %}
+<html lang="en">
+<head>
+    <title>Sparer Tid</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" media="screen">
+    <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>
+    {% if not user.is_authenticated %}
+        <script type="text/javascript" src="{% static 'js/bootstrap/dropdown.js' %}"></script>
+    {% endif %}
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="text-right">
+                    {% if user.is_authenticated %}
+                        {{ user.full_name }}<a href="#" class="btn btn-xs btn-danger">{% trans 'Sign out' %}</a>
+                    {% else %}
+                        <a href="#" class="btn btn-xs btn-success">{% trans 'Sign in' %}</a>
+                        <a href="#" class="btn btn-xs btn-info">{% trans 'Sign up' %}</a>
+                    {% endif %}
+                </p>
+                <h1>Sparer Tid</h1>
+            </div>
+        </div>
+        {% if not user.is_authenticated %}
+            <div class="row">
+                <div class="col-m-12">
+                    <nav class="navbar navbar-default">
+                        <ul class="nav navbar-nav">
+                            <li><a href="#">{% trans 'Board' %}</a></li>
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans 'Projects' %} <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#">project name</a></li>
+                                </ul>
+                            </li>
+                            <li><a href="#">{% trans 'Add Project' %}</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="#">{{ user.full_name }}&nbsp;<span class="glyphicon glyphicon-user"></span></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col-md-12">
+                {% block contect %}{% endblock %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <small>&copy;Maria Yakimova & Vadym Zakovinko</small>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
