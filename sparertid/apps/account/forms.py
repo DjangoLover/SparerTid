@@ -2,10 +2,19 @@ from django import forms
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
+from sparertid.lib.forms import FieldAttributesFormMixin
 from .models import User
 
 
-class UserCreationForm(forms.ModelForm):
+class UserCreationForm(FieldAttributesFormMixin, forms.ModelForm):
+
+    widget_attrs = {
+        'email': {'class': 'form-control'},
+        'jid': {'class': 'form-control'},
+        'timezone': {'class': 'form-control'},
+        'password1': {'class': 'form-control'},
+        'password2': {'class': 'form-control'},
+    }
 
     password1 = forms.CharField(
         label=_('Password'),
@@ -21,7 +30,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta():
         model = User
-        fields = ('email', 'jid')
+        fields = ('email', 'jid', 'timezone')
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1')
@@ -47,4 +56,3 @@ class UserChangeForm(forms.ModelForm):
 
     def clean_password(self):
         return self.initial['password']
-

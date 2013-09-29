@@ -7,7 +7,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link href="{% static 'css/main.css' %}" rel="stylesheet" type="text/css" media="screen">
     <script type="text/javascript" src="{% static 'js/jquery-2.0.3.min.js' %}"></script>
-    {% if not user.is_authenticated %}
+    {% if user.is_authenticated %}
         <script type="text/javascript" src="{% static 'js/bootstrap/dropdown.js' %}"></script>
     {% endif %}
 </head>
@@ -21,13 +21,13 @@
                         {{ user.full_name }}<a href="#" class="btn btn-xs btn-danger">{% trans 'Sign out' %}</a>
                     {% else %}
                         <a href="#" class="btn btn-xs btn-success">{% trans 'Sign in' %}</a>
-                        <a href="#" class="btn btn-xs btn-info">{% trans 'Sign up' %}</a>
+                        <a href="{% url 'account_signup' %}" class="btn btn-xs btn-info">{% trans 'Sign up' %}</a>
                     {% endif %}
                 </p>
                 <h1>Sparer Tid</h1>
             </div>
         </div>
-        {% if not user.is_authenticated %}
+        {% if user.is_authenticated %}
             <div class="row">
                 <div class="col-m-12">
                     <nav class="navbar navbar-default">
@@ -50,7 +50,7 @@
         {% endif %}
         <div class="row">
             <div class="col-md-12">
-                {% block contect %}{% endblock %}
+                {% block content %}{% endblock %}
             </div>
         </div>
         <div class="row">
