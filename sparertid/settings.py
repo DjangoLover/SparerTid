@@ -138,6 +138,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south',
     'sparertid.apps.account',
+    'sparertid.apps.project',
     'sparertid.apps.imbot',
 )
 
