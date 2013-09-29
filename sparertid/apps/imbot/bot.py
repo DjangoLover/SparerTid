@@ -7,6 +7,7 @@ import redis
 import xmpp
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 
 
@@ -129,6 +130,8 @@ class IMBot(object):
                 except User.DoesNotExist:
                     IMBot.send_message(jid, _('user with this jid not found'))
                     continue
+
+                timezone.activate(user.timezone)
 
                 found = False
                 for regex, func in IMBot._commands:

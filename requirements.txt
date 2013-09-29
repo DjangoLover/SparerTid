@@ -1,4 +1,7 @@
 Django==1.5.4
 South==0.8.2
+psycopg2==2.5.1
+pytz==2013d
+redis==2.8.0
 wsgiref==0.1.2
 xmpppy==0.5.0rc1

@@ -1,3 +1,4 @@
+import pytz
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils.translation import ugettext_lazy as _
@@ -25,6 +26,12 @@ class User(PermissionsMixin, AbstractBaseUser):
         unique=True
     )
 
+    timezone = models.CharField(
+        _(u'Time Zone'),
+        max_length=40,
+        choices=zip(*[pytz.common_timezones]*2)
+    )
+
     first_name = models.CharField(
         _('First name'), max_length=50,
         blank=True, null=True
@@ -39,7 +46,7 @@ class User(PermissionsMixin, AbstractBaseUser):
         _('Gender'), max_length=1,
         blank=True, null=True, choices=GENDER
     )
-    
+
     is_staff = models.BooleanField(default=False)
 
     is_active = models.BooleanField(default=False)
@@ -53,5 +60,3 @@ class User(PermissionsMixin, AbstractBaseUser):
 
     def get_short_name(self):
         return self.get_username()
-
-
