@@ -1,4 +1,5 @@
 import threading
+from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext as _
@@ -24,6 +25,15 @@ def ping(spent_time_pk):
         _(u'%s#%s is out date') % (spent_time.project, spent_time.task)
     )
 
+def set_ping_timer(spenttime):
+    now = timezone.localtime(timezone.now())
+    delay = spenttime.eta - now
+    timer = threading.Timer(
+        delay.total_seconds(),
+        ping,
+        args=(spenttime.pk, )
+    )
+    timer.start()
 
 @IMBot.command_register(
     r'(?P<project>\w+)#(?P<task>[\w\-_.]+)\s+eta\s+(?P<eta>\d{1,2}:\d{1,2})'
@@ -37,14 +47,7 @@ def create_eta(user, message, **kwargs):
 
     if form.is_valid():
         spenttime = form.save()
-
-        delay = spenttime.eta - now
-        timer = threading.Timer(
-            delay.total_seconds(),
-            ping,
-            args=(spenttime.pk, )
-        )
-        timer.start()
+        set_ping_timer(spenttime)
 
         return '%s#%s expected at %s' % (
             spenttime.project,
@@ -57,14 +60,37 @@ def create_eta(user, message, **kwargs):
 @IMBot.command_register(r'eta\s+done')
 def finish_eta(user, message, **kwargs):
     try:
-        eta = SpentTime.objects.get(user=user, finished_at__isnull=True)
+        spenttime = SpentTime.objects.get(user=user, finished_at__isnull=True)
     except SpentTime.DoesNotExist:
         return 'current eta not exist'
 
-    eta.finish()
+    spenttime.finish()
 
     return '%s#%s finished at %s' % (
-        eta.project,
-        eta.task,
-        eta.finished_at.strftime('%Y/%m/%d %H:%M')
+        spenttime.project,
+        spenttime.task,
+        timezone.localtime(spenttime.finished_at).strftime('%Y/%m/%d %H:%M')
+    )
+
+@IMBot.command_register(r'eta \+(?P<time>\d+[mh])')
+def prolong_eta(user, message, **kwargs):
+    types = {'m': 'minutes', 'h': 'hours'}
+    try:
+        spenttime = SpentTime.objects.get(user=user, finished_at__isnull=True)
+    except SpentTime.DoesNotExist:
+        return 'current eta not exist'
+
+    time = int(kwargs['time'][:-1])
+    tp = kwargs['time'][-1]
+    params = {types[tp]: time}
+
+    spenttime.eta += timedelta(**params)
+    spenttime.save()
+
+    set_ping_timer(spenttime)
+
+    return '%s#%s expected at %s' % (
+        spenttime.project,
+        spenttime.task,
+        timezone.localtime(spenttime.eta).strftime('%Y/%m/%d %H:%M')
     )
